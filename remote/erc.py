@@ -10,6 +10,7 @@ import sys
 import time
 import collections
 import os
+import traceback
 
 import serial
 
@@ -600,18 +601,21 @@ class ERC(object):
         return True
 
     def execute_command(self, command_string):
-        """ Issue a system control or status read command """
-        if not command_string.endswith("\r"):
-            command_string += "\r"
+        try :
+        
+            """ Issue a system control or status read command """
+            if not command_string.endswith("\r"):
+                command_string += "\r"
 
-        self.short_message("01,000", command_string)
-        result = self.receive_execution_response()
-        if type(result) != list:
-            # this error condition was already warned about, this prevents
-            # the error string from being interpreted as a result
-            # fixme: to raise or not to raise?
-            result = []
-
+            self.short_message("01,000", command_string)
+            result = self.receive_execution_response()
+            if type(result) != list:
+                # this error condition was already warned about, this prevents
+                # the error string from being interpreted as a result
+                # fixme: to raise or not to raise?
+                result = []
+        except : 
+            warn("execute_command exception:\rcommand was:" + command_string + "\rexcept was:" + str(traceback.format_exc()))
         return result
 
     def receive_execution_response(self):
