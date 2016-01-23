@@ -49,14 +49,19 @@ def main():
 
     erc.DEBUG = args.debug
 
+    command = ""
+    for command_part in args.command:
+        command = command + command_part + " "
+    #
+    command = command.strip()
+
     robot = erc.ERC()
-    for command in args.command:
-        result = robot.execute_command(command)
-        if result:
-            print ",".join(result)
-            if command == 'RSTATS':
-                erc.warn("The result represents these flags: "
-                         + ",".join(erc.decode_rstats(result)), True)
+    result = robot.execute_command(command)
+    if result:
+        print ",".join(result)
+        if command == 'RSTATS':
+            erc.warn("The result represents these flags: "
+                     + ",".join(erc.decode_rstats(result)), True)
 
 
     return True
